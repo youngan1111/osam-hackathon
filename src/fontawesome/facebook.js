@@ -4,7 +4,7 @@ import { faFacebookF } from "@fortawesome/free-brands-svg-icons";
 
 const Facebook = () => {
   return (
-	<i className="fab fa-twitter">
+	<i className="fab fa-facebook">
 		<FontAwesomeIcon icon={faFacebookF}/>
 	 </i>
   );

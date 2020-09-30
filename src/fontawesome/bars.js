@@ -4,10 +4,18 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 
 const Bars = () => {
   return (
-	<a href="naver.com" className="navbar__toggleBtn">
+	<i onClick={clickHandler} className="navbar__toggleBtn">
 		<FontAwesomeIcon icon={faBars}/>
-	 </a>
+	 </i>
   );
+}
+
+const clickHandler = () => {
+	const menu = document.querySelector('.navbar__menu');
+	const icons = document.querySelector('.navbar__icons');
+
+	menu.classList.toggle('active');
+	icons.classList.toggle('active');
 }
 
 export default Bars;

@@ -3,6 +3,7 @@ import "./App.css";
 import Bars from "./fontawesome/bars";
 import Twitter from "./fontawesome/twitter";
 import Facebook from "./fontawesome/facebook";
+import Edit from "./fontawesome/edit";
 import Reservation from "./reservation";
 import ShowReservation from "./showReservation";
 import IndexPage from "./indexPage";
@@ -16,21 +17,27 @@ import {
 const App = () => {
   return (
     <Router>
+
       <div>
         <nav className="navbar">
           <div className="navbar__logo">
-            <i className="fab fa-accusoft"></i>
-            <NavLink exact to="/">
-              체육시설 예약체계
-            </NavLink>
+          <NavLink exact to="/">
+            <i><Edit/></i>
+            &nbsp;체육시설 예약체계</NavLink>
           </div>
 
           <ul className="navbar__menu">
             <li>
-              <NavLink to="/reservation">Reservation</NavLink>
+              <NavLink to="/reservation">예약신청</NavLink>
             </li>
             <li>
-              <NavLink to="/showReservation">Show reservation</NavLink>
+              <NavLink to="/showReservation">예약확인</NavLink>
+            </li>
+            <li>
+              <NavLink to="/reservation">게시판</NavLink>
+            </li>
+            <li>
+              <NavLink to="/showReservation">마이페이지</NavLink>
             </li>
           </ul>
 
@@ -43,9 +50,10 @@ const App = () => {
             </li>
           </ul>
 
-          <Bars />
+          <Bars/>
         </nav>
       </div>
+
       <Switch>
         <Route exact path="/">
           <IndexPage />
@@ -60,6 +68,7 @@ const App = () => {
           <h2>Not found</h2>
         </Route>
       </Switch>
+
     </Router>
   );
 };
