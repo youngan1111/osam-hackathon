@@ -31,6 +31,7 @@ a {
 }
 
 .navbar__logo {
+  /* margin-left: 200px; */
   font-size: 24px;
   color: var(--text-color);
 }
@@ -55,6 +56,8 @@ a {
   border-radius: 4px;
 }
 .navbar__icons {
+  /* margin-right: 200px; */
+  font-size: 15px;
   list-style: none;
   color: var(--text-color);
   display: flex;
@@ -73,16 +76,17 @@ a {
   color: var(--accent-color);
 }
 
-/* For small screen */
-@media screen and (max-width: 768px) {
-  /* Nav container */
+@media screen and (max-width: 52rem) {
   .navbar {
     flex-direction: column;
     align-items: flex-start;
     padding: 8px 24px;
   }
 
-  /* Menu */
+  .navbar__logo {
+    margin-left: 0px;
+  }
+
   .navbar__menu {
     display: none;
     flex-direction: column;
@@ -97,6 +101,7 @@ a {
 
   /* Icons */
   .navbar__icons {
+    margin-right: 0px;
     display: none;
     justify-content: center;
     width: 100%;

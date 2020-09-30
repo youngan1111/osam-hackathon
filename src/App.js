@@ -1,9 +1,9 @@
 import React from "react";
 import "./App.css";
 import Bars from "./fontawesome/bars";
-import Twitter from "./fontawesome/twitter";
-import Facebook from "./fontawesome/facebook";
 import Edit from "./fontawesome/edit";
+import User from "./fontawesome/user";
+import Login from "./fontawesome/login";
 import Reservation from "./reservation";
 import ShowReservation from "./showReservation";
 import IndexPage from "./indexPage";
@@ -21,9 +21,10 @@ const App = () => {
       <div>
         <nav className="navbar">
           <div className="navbar__logo">
-          <NavLink exact to="/">
-            <i><Edit/></i>
-            &nbsp;체육시설 예약체계</NavLink>
+            <NavLink exact to="/">
+              <i><Edit/></i>
+              &nbsp;체육시설 예약체계
+            </NavLink>
           </div>
 
           <ul className="navbar__menu">
@@ -43,10 +44,12 @@ const App = () => {
 
           <ul className="navbar__icons">
             <li>
-              <Twitter />
+              <User/>
+              <NavLink>&nbsp;회원가입</NavLink>
             </li>
             <li>
-              <Facebook />
+              <Login/>
+              <NavLink>&nbsp;로그인</NavLink>
             </li>
           </ul>
 
