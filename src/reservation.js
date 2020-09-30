@@ -1,15 +1,24 @@
 import React, { Component } from "react";
-import { firestore } from "./firebase";
+import firebase from "./firebase";
+import Login from './Login';
 
 class Reservation extends Component {
-  state = {
-    reservations: [],
-    reservation: "",
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      tasks: [
+      ],
+      task: '',
+      login: true
+    }
+    if (firebase.auth.currentUser === null) {
+      this.state.login = false;
+    }
+  }
 
   componentDidMount() {
     const reservations = [...this.state.reservations];
-    firestore
+    firebase.firestore
       .collection("reservations")
       .get()
       .then((docs) => {
@@ -23,7 +32,7 @@ class Reservation extends Component {
   onClickHandler = (e) => {
     e.preventDefault();
 
-    firestore
+    firebase.firestore
       .collection("reservations")
       .add({ sports: this.state.reservation })
       .then((r) => {
@@ -43,7 +52,7 @@ class Reservation extends Component {
     });
   };
   deleteHandler = (id) => {
-    firestore
+    firebase.firestore
       .collection("reservations")
       .doc(id)
       .delete()
@@ -54,19 +63,29 @@ class Reservation extends Component {
         this.setState({ reservations });
       });
   };
+  checkLogin = () => {
+    if (firebase.auth.currentUser != null) {
+      this.setState({ login: true });
+    }
+  }
 
   render() {
     return (
       <div>
-        <ReservationAdd
-          value={this.state.reservation}
-          changeHandler={this.onChangeHandler}
-          clickHandler={this.onClickHandler}
-        />
-        <ReservationDisplay
-          reservations={this.state.reservations}
-          deleteHandler={this.deleteHandler}
-        />
+        {this.state.login ?
+          <div>
+            <ReservationAdd
+              value={this.state.reservation}
+              changeHandler={this.onChangeHandler}
+              clickHandler={this.onClickHandler}
+            />
+            <ReservationDisplay
+              reservations={this.state.reservations}
+              deleteHandler={this.deleteHandler}
+            />
+          </div>
+          : <Login login={this.checkLogin}></Login>
+        }
       </div>
     );
   }
