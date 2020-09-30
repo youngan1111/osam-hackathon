@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import firebase from "./firebase";
-import Login from './Login';
+import Login from './login';
 
 class Reservation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tasks: [
-      ],
-      task: '',
+      reservations: [],
+      reservation: '',
       login: true
     }
+
     if (firebase.auth.currentUser === null) {
       this.state.login = false;
     }
