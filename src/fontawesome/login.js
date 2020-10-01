@@ -4,7 +4,7 @@ import { faDoorOpen } from "@fortawesome/free-solid-svg-icons";
 
 const Login = () => {
   return (
-    <i class="fas fa-door-open">
+    <i className="fas fa-door-open">
 		<FontAwesomeIcon icon={faDoorOpen}/>
 	 </i>
   );

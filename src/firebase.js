@@ -18,9 +18,22 @@ class Firebase {
     app.initializeApp(firebaseConfig);
     this.firestore = app.firestore();
     this.auth = app.auth();
+    this.auth.setPersistence(app.auth.Auth.Persistence.SESSION);
   }
+
+  
+
   doSignInWithEmailAndPassword(email, password) {
     return this.auth.signInWithEmailAndPassword(email, password)
   }
+
+  doCreateUserWithEmailAndPassword(email, password){
+    return this.auth.createUserWithEmailAndPassword(email, password);
+  }
+
+  doSignOut(){
+    return this.auth.signOut()
+  }
 }
+
 export default new Firebase();

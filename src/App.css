@@ -19,6 +19,17 @@ a {
   color: var(--text-color);
 }
 
+.responsive_nav{
+  width: 100%;
+  margin: auto;
+  max-width: 80rem;
+  position: relative;
+  background-color: var(--background-color);
+}
+.responsive_nav:before{
+  background-color: var(--background-color);
+}
+
 .reservationList{
 	color: black
 }
@@ -27,11 +38,9 @@ a {
   justify-content: space-between;
   align-items: center;
   padding: 8px 12px;
-  background-color: var(--background-color);
 }
 
 .navbar__logo {
-  /* margin-left: 200px; */
   font-size: 24px;
   color: var(--text-color);
 }
@@ -45,6 +54,7 @@ a {
   display: flex;
   padding-left: 0;
   list-style: none;
+  margin-bottom: 5px;
 }
 
 .navbar__menu li {
@@ -55,17 +65,23 @@ a {
   background-color: var(--accent-color);
   border-radius: 4px;
 }
+
 .navbar__icons {
-  /* margin-right: 200px; */
   font-size: 15px;
   list-style: none;
   color: var(--text-color);
   display: flex;
   padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .navbar__icons li {
   padding: 8px 12px;
+}
+.navbar__icons li:hover {
+  background-color: var(--accent-color);
+  border-radius: 4px;
 }
 
 .navbar__toggleBtn {
@@ -76,15 +92,11 @@ a {
   color: var(--accent-color);
 }
 
-@media screen and (max-width: 52rem) {
+@media screen and (max-width: 59rem) {
   .navbar {
     flex-direction: column;
     align-items: flex-start;
     padding: 8px 24px;
-  }
-
-  .navbar__logo {
-    margin-left: 0px;
   }
 
   .navbar__menu {
@@ -95,24 +107,19 @@ a {
   }
 
   .navbar__menu a {
-    /* Fill in an entire line so that user can click on any space */
     display: block;
   }
 
-  /* Icons */
   .navbar__icons {
-    margin-right: 0px;
     display: none;
     justify-content: center;
     width: 100%;
   }
 
-  /* Toggle button */
   .navbar__toggleBtn {
     display: block;
   }
 
-  /* When toggle button is clicked - active state */
   .navbar__menu.active,
   .navbar__icons.active {
     display: flex;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import "./App.css";
 import Bars from "./fontawesome/bars";
 import Edit from "./fontawesome/edit";
@@ -7,6 +7,8 @@ import Login from "./fontawesome/login";
 import Reservation from "./reservation";
 import ShowReservation from "./showReservation";
 import IndexPage from "./indexPage";
+import firebase from './firebase';
+import LoginForm from './login';
 import {
   BrowserRouter as Router,
   Switch,
@@ -15,10 +17,23 @@ import {
 } from "react-router-dom";
 
 const App = () => {
+  const [logined, setLogin] = useState(true);
+
+  useEffect(() => {
+    if (firebase.auth.currentUser === null) {
+      setLogin(false);
+    }
+  });
+
+  const firebaseSignOut = () => {
+    setLogin(false);
+    firebase.doSignOut()
+  }
+
   return (
     <Router>
 
-      <div>
+      <div className="responsive_nav">
         <nav className="navbar">
           <div className="navbar__logo">
             <NavLink exact to="/">
@@ -45,11 +60,14 @@ const App = () => {
           <ul className="navbar__icons">
             <li>
               <User/>
-              <NavLink>&nbsp;회원가입</NavLink>
+              <NavLink to="/signUp">&nbsp;회원가입</NavLink>
             </li>
             <li>
               <Login/>
-              <NavLink>&nbsp;로그인</NavLink>
+              {logined ?
+              <button onClick={firebaseSignOut}>로그아웃</button>:
+              <NavLink to="/login">&nbsp;로그인</NavLink>
+              }
             </li>
           </ul>
 
@@ -61,15 +79,27 @@ const App = () => {
         <Route exact path="/">
           <IndexPage />
         </Route>
+
         <Route path="/reservation">
           <Reservation />
         </Route>
+
         <Route path="/showReservation">
           <ShowReservation />
         </Route>
+
+        <Route path="/login">
+          <LoginForm />
+        </Route>
+
+        <Route path="/signUp">
+          <LoginForm />
+        </Route>
+
         <Route path="/">
           <h2>Not found</h2>
         </Route>
+
       </Switch>
 
     </Router>

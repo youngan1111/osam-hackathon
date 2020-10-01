@@ -4,7 +4,7 @@ import { faUser } from "@fortawesome/free-regular-svg-icons";
 
 const User = () => {
   return (
-    <i class="far fa-user">
+    <i className="far fa-user">
 		<FontAwesomeIcon icon={faUser}/>
 	 </i>
   );
