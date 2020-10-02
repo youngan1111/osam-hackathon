@@ -4,13 +4,14 @@ import Bars from "./fontawesome/bars";
 import Edit from "./fontawesome/edit";
 import User from "./fontawesome/user";
 import Login from "./fontawesome/login";
+import Logout from "./fontawesome/logout";
 import Reservation from "./reservation";
-import ShowReservation from "./showReservation";
+// import ShowReservation from "./showReservation";
 import IndexPage from "./indexPage";
 import PrivateRoute from './privateRoute'
 import LoginForm from './login';
 import SignUp from './signUp'
-import ShowFirestore from './showFirestore'
+import app from "./firebase"
 import { AuthProvider } from './auth'
 import {
   BrowserRouter as Router,
@@ -20,9 +21,15 @@ import {
 } from "react-router-dom";
 
 const App = () => {
+  const [isLogined, setIsLogined] = React.useState(false);
+
+  const checkUser = (parameter) => {
+    if (parameter) setIsLogined(true)
+    else setIsLogined(false)
+  }
 
   return (
-    <AuthProvider>
+    <AuthProvider parentFunction={checkUser}>
       <Router>
         <div className="responsive_nav">
           <nav className="navbar">
@@ -51,14 +58,22 @@ const App = () => {
             <ul className="navbar__icons">
               <li>
                 <User />
-                <NavLink to="/signUp">&nbsp;회원가입</NavLink>
+                {isLogined ?
+                  <span>&nbsp;내정보</span> :
+                  <NavLink to="/signUp">&nbsp;회원가입</NavLink>
+                }
               </li>
-              <li>
-                <Login />
-                <NavLink to="/login">&nbsp;로그인</NavLink>
-              </li>
+              {isLogined ?
+                <li>
+                  <Logout />
+                  <a href="#logout" onClick={() => app.auth().signOut()}>&nbsp;로그아웃</a>
+                </li> :
+                <li>
+                  <Login />
+                  <NavLink to="/login">&nbsp;로그인</NavLink>
+                </li>
+              }
             </ul>
-
             <Bars />
           </nav>
         </div>
@@ -68,7 +83,7 @@ const App = () => {
 
           <PrivateRoute path="/reservation" component={Reservation} />
 
-          <Route path="/showReservation" component={ShowFirestore} />
+          <Route path="/showReservation" component={Reservation} />
 
           <Route path="/login" component={LoginForm} />
 

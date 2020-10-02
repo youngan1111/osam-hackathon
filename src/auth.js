@@ -3,7 +3,7 @@ import app from "./firebase";
 
 export const AuthContext = React.createContext();
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = (props) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [pending, setPending] = useState(true);
 
@@ -14,8 +14,12 @@ export const AuthProvider = ({ children }) => {
     });
   }, []);
 
-  if(pending){
+  if (pending) {
     return <>Loading...</>
+  }
+
+  const childFunction = () => {
+    props.parentFunction(currentUser);
   }
 
   return (
@@ -24,7 +28,8 @@ export const AuthProvider = ({ children }) => {
         currentUser
       }}
     >
-      {children}
+      {childFunction()}
+      {props.children}
     </AuthContext.Provider>
   );
 };

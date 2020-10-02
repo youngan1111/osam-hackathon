@@ -22,7 +22,6 @@ const Login = ({ history }) => {
     );
 
     const { currentUser } = useContext(AuthContext);
-
     if (currentUser) {
         return <Redirect to="/" />;
     }
@@ -67,7 +66,7 @@ const Login = ({ history }) => {
                         </div>
                     </div>
 
-                    <div className="sign-up-htm">
+                    {/* <div className="sign-up-htm">
                         <div className="group">
                             <label htmlFor="user" className="label">아이디</label>
                             <input id="user" type="text" className="input"></input>
@@ -83,7 +82,7 @@ const Login = ({ history }) => {
                         <div className="group">
                             <input type="submit" className="button" value="가입하기"></input>
                         </div>
-                    </div>
+                    </div> */}
 
                 </div>
             </div>
