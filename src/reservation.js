@@ -1,6 +1,7 @@
-import React, { Component } from "react";
-import firebase from "./firebase";
-import Login from './login';
+import React, { Component, useContext } from "react";
+import app from "./firebase";
+import { AuthContext } from "./auth";
+import { withRouter, Redirect } from "react-router";
 
 class Reservation extends Component {
   constructor(props) {
@@ -8,17 +9,12 @@ class Reservation extends Component {
     this.state = {
       reservations: [],
       reservation: '',
-      login: true
-    }
-
-    if (firebase.auth.currentUser === null) {
-      this.state.login = false;
     }
   }
 
   componentDidMount() {
     const reservations = [...this.state.reservations];
-    firebase.firestore
+    app.firestore
       .collection("reservations")
       .get()
       .then((docs) => {
@@ -32,7 +28,7 @@ class Reservation extends Component {
   onClickHandler = (e) => {
     e.preventDefault();
 
-    firebase.firestore
+    app.firestore
       .collection("reservations")
       .add({ sports: this.state.reservation })
       .then((r) => {
@@ -52,7 +48,7 @@ class Reservation extends Component {
     });
   };
   deleteHandler = (id) => {
-    firebase.firestore
+    app.firestore
       .collection("reservations")
       .doc(id)
       .delete()
@@ -63,29 +59,28 @@ class Reservation extends Component {
         this.setState({ reservations });
       });
   };
-  checkLogin = () => {
-    if (firebase.auth.currentUser != null) {
-      this.setState({ login: true });
-    }
-  }
+
+
 
   render() {
+    const { currentUser } = useContext(AuthContext);
+    if (!currentUser) {
+      return <Redirect to="/login" />;
+    }
+
     return (
       <div>
-        {this.state.login ?
-          <div>
-            <ReservationAdd
-              value={this.state.reservation}
-              changeHandler={this.onChangeHandler}
-              clickHandler={this.onClickHandler}
-            />
-            <ReservationDisplay
-              reservations={this.state.reservations}
-              deleteHandler={this.deleteHandler}
-            />
-          </div>
-          : <Login login={this.checkLogin}></Login>
-        }
+        <div>
+          <ReservationAdd
+            value={this.state.reservation}
+            changeHandler={this.onChangeHandler}
+            clickHandler={this.onClickHandler}
+          />
+          <ReservationDisplay
+            reservations={this.state.reservations}
+            deleteHandler={this.deleteHandler}
+          />
+        </div>
       </div>
     );
   }
@@ -114,4 +109,4 @@ const ReservationDisplay = ({ reservations, deleteHandler }) => {
   return reservationDisplay;
 };
 
-export default Reservation;
+export default withRouter(Reservation);
