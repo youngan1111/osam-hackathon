@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
 
 :root {
-  --text-color: #f0f4f5;
-  --background-color: #263343;
-  --accent-color: #d49466;
+  --text-color: black;
+  --background-color: #0f4c8133;
+  --accent-color: #7986cb;
 }
 
 * {
@@ -20,6 +20,10 @@ a {
   color: var(--text-color);
 }
 
+.errorMessage{
+  color: red;
+  margin: 0px;
+}
 .responsive_nav{
   width: 100%;
   margin: auto;

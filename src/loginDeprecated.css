@@ -1,6 +1,5 @@
 body{
 	color:#6a6f8c;
-	background:#c8c8c8;
 }
 
 *,:after,:before{box-sizing:border-box}
@@ -82,7 +81,6 @@ body{
 	background:rgba(255,255,255,.1);
 }
 .login-form .group input[data-type="password"]{
-	text-security:circle;
 	-webkit-text-security:circle;
 }
 .login-form .group .label{

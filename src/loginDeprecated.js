@@ -4,7 +4,7 @@ import app from "./firebase";
 import { AuthContext } from "./auth";
 import "./login.css";
 
-const Login = ({ history, location }) => {
+const Login = ({ location }) => {
     const handleLogin = async event => {
         event.preventDefault();
         const { email, password } = event.target.elements;
@@ -24,7 +24,6 @@ const Login = ({ history, location }) => {
     if (currentUser) {
         return <Redirect to={from.pathname} />;
     }
-
 
     return (
         <div className="login-wrap">

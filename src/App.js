@@ -6,11 +6,10 @@ import User from "./fontawesome/user";
 import Login from "./fontawesome/login";
 import Logout from "./fontawesome/logout";
 import Reservation from "./reservation";
-// import ShowReservation from "./showReservation";
 import IndexPage from "./indexPage";
 import PrivateRoute from './privateRoute'
-import LoginForm from './login';
 import SignUp from './signUp'
+import SignIn from './signIn'
 import app from "./firebase"
 import { AuthProvider } from './auth'
 import {
@@ -87,7 +86,7 @@ const App = () => {
 
           <Route path="/showReservation" component={Reservation} />
 
-          <Route path="/login" component={LoginForm} />
+          <Route path="/login" component={SignIn} />
 
           <Route path="/signUp" component={SignUp} />
 
