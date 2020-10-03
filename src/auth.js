@@ -18,17 +18,12 @@ export const AuthProvider = (props) => {
     return <>Loading...</>
   }
 
-  const childFunction = () => {
-    props.parentFunction(currentUser);
-  }
-
   return (
     <AuthContext.Provider
       value={{
         currentUser
       }}
     >
-      {childFunction()}
       {props.children}
     </AuthContext.Provider>
   );

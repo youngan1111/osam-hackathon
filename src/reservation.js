@@ -6,13 +6,17 @@ const Reservation = () => {
   const [newReservation, setNewReservation] = React.useState('');
 
   React.useEffect(() => {
+    let isMounted = true
+
     const fetchData = async () => {
       const db = app.firestore();
       const data = await db.collection("reservations").get();
-      setReservations(data.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+      if (isMounted) setReservations(data.docs.map(doc => ({ ...doc.data(), id: doc.id })));
     };
     fetchData();
-  }, []);
+    
+    return () => { isMounted = false }
+  });
 
   const onCreate = (e) => {
     e.preventDefault();
@@ -38,14 +42,15 @@ const Reservation = () => {
       <form onSubmit={onCreate}>
         <input
           value={newReservation}
-          onChange={e => setNewReservation(e.target.value)}
+          type="text"
+          onChange={({ target: { value } }) => setNewReservation(value)}
         />
         <button type="submit">추가</button>
       </form>
       {
         reservations.map(reservation => (
           <li key={reservation.id}>
-            <input value={reservation.name} ></input>
+            <input defaultValue={reservation.name} readOnly ></input>
             <button type="submit" onClick={() => onDelete(reservation.id)}>삭제</button>
           </li>
         ))

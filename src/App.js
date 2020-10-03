@@ -23,13 +23,15 @@ import {
 const App = () => {
   const [isLogined, setIsLogined] = React.useState(false);
 
-  const checkUser = (parameter) => {
-    if (parameter) setIsLogined(true)
-    else setIsLogined(false)
-  }
+  React.useEffect(() => {
+    app.auth().onAuthStateChanged((user) => {
+      if (user) setIsLogined(true);
+      else setIsLogined(false)
+    });
+  })
 
   return (
-    <AuthProvider parentFunction={checkUser}>
+    <AuthProvider>
       <Router>
         <div className="responsive_nav">
           <nav className="navbar">

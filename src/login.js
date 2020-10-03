@@ -1,30 +1,30 @@
-import React, { useCallback, useContext } from "react";
+import React, { useContext } from "react";
 import { withRouter, Redirect } from "react-router";
 import app from "./firebase";
 import { AuthContext } from "./auth";
 import "./login.css";
 
-const Login = ({ history }) => {
-    const handleLogin = useCallback(
-        async event => {
-            event.preventDefault();
-            const { email, password } = event.target.elements;
-            try {
-                await app
-                    .auth()
-                    .signInWithEmailAndPassword(email.value, password.value);
-                history.push("/");
-            } catch (error) {
-                alert(error);
+const Login = ({ history, location }) => {
+    const handleLogin = async event => {
+        event.preventDefault();
+        const { email, password } = event.target.elements;
+        try {
+            await app.auth().signInWithEmailAndPassword(email.value, password.value);
+        } catch (error) {
+            if (error.code === 'auth/user-not-found') {
+                alert("존재하지 않는 아이디입니다.")
+            } else if (error.code === 'auth/wrong-password') {
+                alert("잘못된 비밀번호입니다. 다시 시도하거나 비밀번호 찾기를 클릭하여 재설정하세요.")
             }
-        },
-        [history]
-    );
+        }
+    }
 
+    const { from } = location.state || { from: { pathname: "/" } };
     const { currentUser } = useContext(AuthContext);
     if (currentUser) {
-        return <Redirect to="/" />;
+        return <Redirect to={from.pathname} />;
     }
+
 
     return (
         <div className="login-wrap">
@@ -47,7 +47,7 @@ const Login = ({ history }) => {
                                 </label>
                             </div>
                             <div className="group">
-                                <label classNmae="label">
+                                <label className="label">
                                     Password
                                         <input name="password" type="password" placeholder="Password" />
                                 </label>
