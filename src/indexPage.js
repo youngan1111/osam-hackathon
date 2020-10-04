@@ -1,7 +1,7 @@
 import React from 'react';
 
 const IndexPage = () => {
-	return(
+	return (
 		<div>
 			<h2>This is index page~</h2>
 		</div>

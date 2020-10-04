@@ -6,17 +6,18 @@ const Reservation = () => {
   const [newReservation, setNewReservation] = React.useState('');
 
   React.useEffect(() => {
-    let isMounted = true
+    // let isMounted = true
 
     const fetchData = async () => {
       const db = app.firestore();
       const data = await db.collection("reservations").get();
-      if (isMounted) setReservations(data.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+      // if (isMounted) setReservations(data.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+      setReservations(data.docs.map(doc => ({ ...doc.data(), id: doc.id })));
     };
     fetchData();
-    
-    return () => { isMounted = false }
-  });
+
+    // return () => { isMounted = false }
+  }, []);
 
   const onCreate = (e) => {
     e.preventDefault();

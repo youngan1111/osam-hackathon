@@ -10,6 +10,8 @@ import IndexPage from "./indexPage";
 import PrivateRoute from './privateRoute'
 import SignUp from './signUp'
 import SignIn from './signIn'
+import CampList from './campList'
+import Checkout from './Checkout'
 import app from "./firebase"
 import { AuthProvider } from './auth'
 import {
@@ -52,7 +54,7 @@ const App = () => {
                 <NavLink to="/reservation">게시판</NavLink>
               </li>
               <li>
-                <NavLink to="/showReservation">마이페이지</NavLink>
+                <NavLink to="/checkout">마이페이지</NavLink>
               </li>
             </ul>
 
@@ -84,11 +86,13 @@ const App = () => {
 
           <PrivateRoute path="/reservation" component={Reservation} />
 
-          <Route path="/showReservation" component={Reservation} />
+          <Route path="/showReservation" component={CampList} />
 
           <Route path="/login" component={SignIn} />
 
           <Route path="/signUp" component={SignUp} />
+
+          <Route path="/checkout" component={Checkout} />
 
           <Route path="/">
             <h2>Not found</h2>
@@ -102,3 +106,4 @@ const App = () => {
 };
 
 export default App;
+
