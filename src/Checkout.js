@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 
 import SelectCamp from './checkoutform/SelectCamp';
 import SelectFacility from './checkoutform/SelectFacility';
-import Review from './checkoutform/Review';
+import SelectDate from './checkoutform/SelectDate';
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -20,8 +20,8 @@ const useStyles = makeStyles((theme) => ({
         width: 'auto',
         marginLeft: theme.spacing(2),
         marginRight: theme.spacing(2),
-        [theme.breakpoints.up(600 + theme.spacing(2) * 2)]: {
-            width: 600,
+        [theme.breakpoints.up(800 + theme.spacing(2) * 2)]: {
+            width: 800,
             marginLeft: 'auto',
             marginRight: 'auto',
         },
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(3),
         marginBottom: theme.spacing(3),
         padding: theme.spacing(2),
-        [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
+        [theme.breakpoints.up(800 + theme.spacing(3) * 2)]: {
             marginTop: theme.spacing(6),
             marginBottom: theme.spacing(6),
             padding: theme.spacing(3),
@@ -57,9 +57,9 @@ export default function Checkout() {
             case 0:
                 return <SelectCamp next={handleNext} save={selectCamp} />;
             case 1:
-                return <SelectFacility name={selectedCamp} />;
+                return <SelectFacility name={selectedCamp} next={handleNext} save={selectFacility} />;
             case 2:
-                return <Review />;
+                return <SelectDate camp={selectedCamp} facility={selectedFacility} />;
             default:
                 throw new Error('Unknown step');
         }
@@ -68,9 +68,13 @@ export default function Checkout() {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
     const [selectedCamp, setSelectedCamp] = React.useState('');
+    const [selectedFacility, setSelectedFacility] = React.useState('');
 
     const selectCamp = (name) => {
         setSelectedCamp(name);
+    }
+    const selectFacility = (name) => {
+        setSelectedFacility(name);
     }
     const handleNext = () => {
         setActiveStep(activeStep + 1);
@@ -120,7 +124,7 @@ export default function Checkout() {
                                                 onClick={handleNext}
                                                 className={classes.button}
                                             >
-                                                {activeStep === steps.length - 1 ? 'Place order' : '다음'}
+                                                {activeStep === steps.length - 1 ? '예약하기' : '다음'}
                                             </Button>
                                         </div>
                                     )}

@@ -16,35 +16,46 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-// const sports = { '야구장': 'SportsBaseball', '농구장': 'SportsBasketball', '축구장': 'SportsSoccer', '테니스장': 'SportsTennis' }
-
-const SelectFacility = ({ name }) => {
+const SelectFacility = ({ name, next, save }) => {
     const classes = useStyles();
     const [facilities, setFacilities] = React.useState([]);
 
     React.useEffect(() => {
         const fetchData = () => {
             const db = app.firestore();
-            db.collection("camp").doc(name).get().then(doc => {
-                const data = doc.data();
-                for (let i = 1; i < Object.keys(data).length + 1; i++) {
-                    setFacilities(oldArray => [...oldArray, { name: data[i] }]);
-                }
+            // 이것은 document 프린트 할때 쓰이는 것 지우지 말것
+            // db.collection("camp").doc(name).get().then(doc => {
+            //     const data = doc.data();
+            //     for (let i = 1; i < Object.keys(data).length + 1; i++) {
+            //         setFacilities(oldArray => [...oldArray, { name: data[i] }]);
+            //     }
+            // });
+            db.collection("camp").doc(name).collection('facility').get().then(snapshot => {
+                snapshot.forEach(doc => {
+                    setFacilities(oldArray => [...oldArray, { name: doc.id }]);
+                });
             });
+
         };
         fetchData();
     }, [name]);
+
+    const onClickEvent = (name) => {
+        next();
+        save(name);
+    }
 
     return (
         <div className={classes.top}>
             {
                 facilities.map(facility => (
                     <Fab
+                        key={facility.name}
                         variant="extended"
                         color="primary"
                         aria-label="add"
                         className={classes.margin}
-                    // onClick={() => onClickEvent(facility.name)}
+                        onClick={() => onClickEvent(facility.name)}
                     >
                         <NavigationIcon className={classes.extendedIcon} />
                         {facility.name}
