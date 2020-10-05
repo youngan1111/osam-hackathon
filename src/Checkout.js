@@ -7,10 +7,12 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import moment from "moment";
 
 import SelectCamp from './checkoutform/SelectCamp';
 import SelectFacility from './checkoutform/SelectFacility';
 import SelectDate from './checkoutform/SelectDate';
+import app from "./firebase";
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -59,7 +61,7 @@ export default function Checkout() {
             case 1:
                 return <SelectFacility name={selectedCamp} next={handleNext} save={selectFacility} />;
             case 2:
-                return <SelectDate camp={selectedCamp} facility={selectedFacility} />;
+                return <SelectDate camp={selectedCamp} facility={selectedFacility} save={selectDate} />;
             default:
                 throw new Error('Unknown step');
         }
@@ -69,6 +71,7 @@ export default function Checkout() {
     const [activeStep, setActiveStep] = React.useState(0);
     const [selectedCamp, setSelectedCamp] = React.useState('');
     const [selectedFacility, setSelectedFacility] = React.useState('');
+    const [selectedDate, setSelectedDate] = React.useState({});
 
     const selectCamp = (name) => {
         setSelectedCamp(name);
@@ -76,12 +79,32 @@ export default function Checkout() {
     const selectFacility = (name) => {
         setSelectedFacility(name);
     }
+    const selectDate = (object) => {
+        setSelectedDate(object);
+    }
     const handleNext = () => {
         setActiveStep(activeStep + 1);
     };
     const handleBack = () => {
         setActiveStep(activeStep - 1);
     };
+
+    const tempFunction = () => {
+        if (activeStep === steps.length) {
+            console.log(selectedDate)
+            console.log(moment(selectedDate.start, 'YYYY-MM-DD HH:mm').format('YYYY.MM.DD'))
+
+            //     / camp / 1함대 / facility / 농구장 / date / 2020.10.5 / reservation / 12~14
+
+            const db = app.firestore();
+            db.collection("camp").doc(selectedCamp).collection('facility').doc(selectedFacility).collection('date').doc(moment(selectedDate.start, 'YYYY-MM-DD HH:mm').format('YYYY.MM.DD'))
+                .collection('reservation').add({ it: "works!!" })
+        }
+    }
+
+    React.useEffect(() => {
+        tempFunction();
+    })
 
     return (
         <React.Fragment>
@@ -102,12 +125,11 @@ export default function Checkout() {
                         {activeStep === steps.length ? (
                             <React.Fragment>
                                 <Typography variant="h5" gutterBottom>
-                                    Thank you for your order.
-                </Typography>
+                                    체육시설 예약이 정상적으로 처리되었습니다.
+                                </Typography>
                                 <Typography variant="subtitle1">
-                                    Your order number is #2001539. We have emailed your order confirmation, and will
-                                    send you an update when your order has shipped.
-                </Typography>
+                                    신청하신 예약은 마이페이지 또는 예약환인 탭에서 조회하실 수 있습니다.
+                                 </Typography>
                             </React.Fragment>
                         ) : (
                                 <React.Fragment>
