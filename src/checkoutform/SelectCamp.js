@@ -43,6 +43,7 @@ const SelectCamp = ({ next, save }) => {
             {
                 camps.map(camp => (
                     <Fab
+                        key={camp.name}
                         variant="extended"
                         color="primary"
                         aria-label="add"

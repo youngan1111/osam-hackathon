@@ -16,30 +16,23 @@ const SelectDate = ({ camp, facility, save }) => {
             const db = app.firestore();
             db.collection("camp").doc(camp).collection('facility').doc(facility).collection('date').get().then(snapshot => {
                 snapshot.forEach(doc => {
-                    setEvents(oldArray => [...oldArray, { start: moment(doc.id).toDate(), end: moment(doc.id).add(1, 'hours').toDate(), title: "forFun" }]);
+                    console.log(doc.id)
+                    // setEvents(oldArray => [...oldArray, { start: moment(doc.id).toDate(), end: moment(doc.id).add(1, 'hours').toDate(), title: "forFun" }]);
                 });
             });
         };
         fetchData();
-    }, [camp, facility]);
+    }, [camp, facility, events]);
 
     const handleSelect = ({ start, end }) => {
-        const title = window.prompt('예약목적을 작성해주십시오.')
-        if (title) {
-            setEvents(oldArray => [...oldArray, { start, end, title }]);
-            save({ start: start, end: end, title: title })
+        if (events.length === 0) {
+            const title = window.prompt('예약목적을 작성해주십시오.')
+            if (title) {
+                setEvents(oldArray => [...oldArray, { start, end, title }]);
+                save({ start: start, end: end, title: title })
+            }
         }
     }
-    // const onCreate = (e) => {
-    //     e.preventDefault();
-
-    //     const db = app.firestore();
-    //     db.collection("reservations").add({ name: newReservation })
-    //         .then(r => {
-    //             setReservations([...reservations, { name: newReservation, id: r.id }]);
-    //         })
-    //     setNewReservation("");
-    // };
 
     return (
         <div>

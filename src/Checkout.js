@@ -89,16 +89,25 @@ export default function Checkout() {
         setActiveStep(activeStep - 1);
     };
 
-    const tempFunction = () => {
+    const tempFunction = async () => {
         if (activeStep === steps.length) {
-            console.log(selectedDate)
-            console.log(moment(selectedDate.start, 'YYYY-MM-DD HH:mm').format('YYYY.MM.DD'))
+            let uid = ''
+            app.auth().onAuthStateChanged((user) => {
+                if (user) uid = user.uid
+            });
 
-            //     / camp / 1함대 / facility / 농구장 / date / 2020.10.5 / reservation / 12~14
+            const start = moment(selectedDate.start, 'YYYY-MM-DD HH:mm').format('YYYY.MM.DD');
+            const end = moment(selectedDate.end, 'YYYY-MM-DD HH:mm').format('YYYY.MM.DD');
 
             const db = app.firestore();
-            db.collection("camp").doc(selectedCamp).collection('facility').doc(selectedFacility).collection('date').doc(moment(selectedDate.start, 'YYYY-MM-DD HH:mm').format('YYYY.MM.DD'))
-                .collection('reservation').add({ it: "works!!" })
+            await db.collection("camp").doc(selectedCamp).collection('facility').doc(selectedFacility).collection('date').doc(start)
+                .collection('reservation').add({ start, end, uid, title: selectedDate.title })
+
+            console.log({ start, end, uid })
+            // db.collection("reservations").add({ name: newReservation })
+            //     .then(r => {
+            //         setReservations([...reservations, { name: newReservation, id: r.id }]);
+            //     })
         }
     }
 
