@@ -91,23 +91,16 @@ export default function Checkout() {
 
     const tempFunction = async () => {
         if (activeStep === steps.length) {
-            let uid = ''
             app.auth().onAuthStateChanged((user) => {
-                if (user) uid = user.uid
+                if (user) {
+                    const start = new Date(selectedDate.start)
+                    const end = new Date(selectedDate.end)
+
+                    const db = app.firestore();
+                    db.collection("camp").doc(selectedCamp).collection('facility').doc(selectedFacility).collection('date').doc(moment(selectedDate.start, 'YYYY-MM-DD HH:mm').format('YYYY.MM.DD'))
+                        .collection('reservation').add({ start, end, uid: user.uid, title: selectedDate.title })
+                }
             });
-
-            const start = moment(selectedDate.start, 'YYYY-MM-DD HH:mm').format('YYYY.MM.DD');
-            const end = moment(selectedDate.end, 'YYYY-MM-DD HH:mm').format('YYYY.MM.DD');
-
-            const db = app.firestore();
-            await db.collection("camp").doc(selectedCamp).collection('facility').doc(selectedFacility).collection('date').doc(start)
-                .collection('reservation').add({ start, end, uid, title: selectedDate.title })
-
-            console.log({ start, end, uid })
-            // db.collection("reservations").add({ name: newReservation })
-            //     .then(r => {
-            //         setReservations([...reservations, { name: newReservation, id: r.id }]);
-            //     })
         }
     }
 

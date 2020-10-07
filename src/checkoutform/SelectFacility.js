@@ -23,7 +23,7 @@ const SelectFacility = ({ name, next, save }) => {
     React.useEffect(() => {
         const fetchData = () => {
             const db = app.firestore();
-            // 이것은 document 프린트 할때 쓰이는 것 지우지 말것
+            // 이것은 document아래를 프린트 할때 쓰이는 것 지우지 말것
             // db.collection("camp").doc(name).get().then(doc => {
             //     const data = doc.data();
             //     for (let i = 1; i < Object.keys(data).length + 1; i++) {
