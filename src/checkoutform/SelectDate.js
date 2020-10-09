@@ -38,8 +38,8 @@ const SelectDate = ({ camp, facility, save }) => {
             if (title) {
                 await setEvents(oldArray => [...oldArray, { start, end, title }]);
                 save({ start: start, end: end, title: title })
+                setCount(1)
             }
-            setCount(1)
         }
     }
 

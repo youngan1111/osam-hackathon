@@ -5,13 +5,14 @@ import Edit from "./fontawesome/edit";
 import User from "./fontawesome/user";
 import Login from "./fontawesome/login";
 import Logout from "./fontawesome/logout";
-import Reservation from "./reservationDeprecated";
+// import ReservationDepricated from "./reservationDeprecated";
 import IndexPage from "./indexPage";
 import PrivateRoute from './privateRoute'
 import SignUp from './signUp'
 import SignIn from './signIn'
 import CampList from './campList'
-import Checkout from './Checkout'
+import Checkout from './reservation'
+import Reservation from './reservation'
 import app from "./firebase"
 import { AuthProvider } from './auth'
 import {

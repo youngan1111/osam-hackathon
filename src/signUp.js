@@ -17,7 +17,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 function Copyright() {
   return (
@@ -68,10 +69,13 @@ const SignUp = ({ history }) => {
   const [rankError, setRankError] = useState('')
   const [nameError, setNameError] = useState('')
   const [serialNumberError, setSerialNumberError] = useState('')
-
   const [military, setMilitary] = React.useState('');
   const [rank, setRank] = React.useState('');
+  const [adminState, setAdminState] = React.useState(false);
 
+  const handleChange = (event) => {
+    setAdminState(event.target.checked);
+  };
   const handleMilitary = (event) => {
     setMilitary(event.target.value);
   };
@@ -79,48 +83,48 @@ const SignUp = ({ history }) => {
     setRank(event.target.value);
   };
 
-  const handleSignUp = useCallback(
-    async event => {
-      event.preventDefault();
-      setEmailError('')
-      setPasswordError('')
-      setMilitaryError('')
-      setRankError('')
-      setNameError('')
-      setSerialNumberError('')
-      setPasswordCheckError('')
+  const handleSignUp = useCallback((event) => {
+    event.preventDefault();
+    setEmailError('')
+    setPasswordError('')
+    setMilitaryError('')
+    setRankError('')
+    setNameError('')
+    setSerialNumberError('')
+    setPasswordCheckError('')
 
-      const { email, password, name, serialNumber, passwordCheck } = event.target.elements;
+    const { email, password, name, serialNumber, passwordCheck } = event.target.elements;
 
-      if (military === '') setMilitaryError('군을 선택하십시오.')
-      else if (rank === '') setRankError('계급을 선택하십시오.')
-      else if (name.value === '') setNameError('이름을 입력하십시오.')
-      else if (serialNumber.value === '') setSerialNumberError('군번을 입력하십시오.')
-      else if (email.value === '') setEmailError('이메일을 입력하십시오.')
-      else if (password.value === '') setPasswordError('비밀번호를 입력하십시오.')
-      else if (passwordCheck.value === '') setPasswordCheckError('비밀번호를 다시 한번 입력해주십시오.')
-      else if (passwordCheck.value !== password.value) setPasswordCheckError('비밀번호가 일치하지 않습니다.')
-      else {
-        try {
-          await app.auth().createUserWithEmailAndPassword(email.value, password.value);
-          history.push("/");
-        } catch (error) {
-          switch (error.code) {
-            case "auth/email-already-in-use":
-              setEmailError('이미 사용중인 이메일입니다.')
-              break
-            case "auth/invalid-email":
-              setEmailError('잘못된 이메일 형식입니다.')
-              break;
-            case "auth/weak-password":
-              setPasswordError('6자 이상의 비밀번호를 사용하세요.')
-              break;
-            default:
-          }
+    if (military === '') setMilitaryError('군을 선택하십시오.')
+    else if (rank === '') setRankError('계급을 선택하십시오.')
+    else if (name.value === '') setNameError('이름을 입력하십시오.')
+    else if (serialNumber.value === '') setSerialNumberError('군번을 입력하십시오.')
+    else if (email.value === '') setEmailError('이메일을 입력하십시오.')
+    else if (password.value === '') setPasswordError('비밀번호를 입력하십시오.')
+    else if (passwordCheck.value === '') setPasswordCheckError('비밀번호를 다시 한번 입력해주십시오.')
+    else if (passwordCheck.value !== password.value) setPasswordCheckError('비밀번호가 일치하지 않습니다.')
+    else {
+      app.auth().createUserWithEmailAndPassword(email.value, password.value).then(({ user }) => {
+        app.firestore().collection("users").add({ name: name.value, military, rank, serialNumber: serialNumber.value, email: email.value, uid: user.uid, admin: adminState })
+
+        history.push("/");
+      }, (error) => {
+        switch (error.code) {
+          case "auth/email-already-in-use":
+            setEmailError('이미 사용중인 이메일입니다.')
+            break;
+          case "auth/invalid-email":
+            setEmailError('잘못된 이메일 형식입니다.')
+            break;
+          case "auth/weak-password":
+            setPasswordError('6자 이상의 비밀번호를 사용하세요.')
+            break;
+          default: break;
         }
-      }
-    },
-    [history, military, rank]
+      });
+    }
+  },
+    [history, military, rank, adminState]
   );
 
   const { currentUser } = useContext(AuthContext);
@@ -263,6 +267,18 @@ const SignUp = ({ history }) => {
               />
               <p className="errorMessage">{passwordCheckError}</p>
             </Grid>
+            <FormControlLabel
+              labelPlacement="start"
+              label="관리자 계정 신청을 원하실 경우 선택하십시오  "
+              control={
+                <Checkbox
+                  checked={adminState}
+                  onChange={handleChange}
+                  name="checkedB"
+                  color="primary"
+                />
+              }
+            />
           </Grid>
           <Button
             type="submit"

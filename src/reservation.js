@@ -11,6 +11,14 @@ import SelectCamp from './checkoutform/SelectCamp';
 import SelectFacility from './checkoutform/SelectFacility';
 import SelectDate from './checkoutform/SelectDate';
 import app from "./firebase";
+import moment from "moment";
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Box from '@material-ui/core/Box'
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -47,6 +55,10 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(3),
         marginLeft: theme.spacing(1),
     },
+    table: {
+        marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(3),
+    }
 }));
 
 const steps = ['부대 선택', '체육시설 선택', '날짜 선택'];
@@ -59,7 +71,7 @@ export default function Checkout() {
             case 1:
                 return <SelectFacility name={selectedCamp} next={handleNext} save={selectFacility} />;
             case 2:
-                return <SelectDate camp={selectedCamp} facility={selectedFacility} save={selectDate} />;
+                return <SelectDate camp={selectedCamp} facility={selectedFacility} save={saveRestInfo} />;
             default:
                 throw new Error('Unknown step');
         }
@@ -69,7 +81,7 @@ export default function Checkout() {
     const [activeStep, setActiveStep] = React.useState(0);
     const [selectedCamp, setSelectedCamp] = React.useState('');
     const [selectedFacility, setSelectedFacility] = React.useState('');
-    const [selectedDate, setSelectedDate] = React.useState({});
+    const [restInfo, setRestInfo] = React.useState({});
 
     const selectCamp = (name) => {
         setSelectedCamp(name);
@@ -77,10 +89,14 @@ export default function Checkout() {
     const selectFacility = (name) => {
         setSelectedFacility(name);
     }
-    const selectDate = (object) => {
-        setSelectedDate(object);
+    const saveRestInfo = (object) => {
+        setRestInfo(object);
     }
     const handleNext = () => {
+        if (activeStep === steps.length - 1 && Object.keys(restInfo).length === 0) {
+            alert('시간을 선택해주십시오.');
+            return;
+        }
         setActiveStep(activeStep + 1);
     };
     const handleBack = () => {
@@ -92,13 +108,11 @@ export default function Checkout() {
             if (activeStep === steps.length) {
                 app.auth().onAuthStateChanged((user) => {
                     if (user) {
-                        const start = new Date(selectedDate.start)
-                        const end = new Date(selectedDate.end)
-
-                        const db = app.firestore();
-                        db.collection("camp").doc(selectedCamp).collection('facility').doc(selectedFacility).collection('reservation').add({ start, end, uid: user.uid, title: selectedDate.title })
+                        const start = new Date(restInfo.start)
+                        const end = new Date(restInfo.end)
+                        app.firestore().collection("camp").doc(selectedCamp).collection('facility').doc(selectedFacility).collection('reservation').add({ start, end, uid: user.uid, title: restInfo.title })
                     } else {
-                        alert("로그인해라")
+                        alert("로그인 오류 발생! 다시 한번 시도해주십시오.")
                     }
                 });
             }
@@ -127,6 +141,32 @@ export default function Checkout() {
                                 <Typography variant="h5" gutterBottom>
                                     체육시설 예약이 정상적으로 처리되었습니다.
                                 </Typography>
+                                <Box boxShadow={1}>
+                                    <Typography className={classes.table} variant="subtitle1">
+                                        <TableContainer component={Paper}>
+                                            <Table aria-label="simple table">
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell>부대</TableCell>
+                                                        <TableCell align="right">체육시설</TableCell>
+                                                        <TableCell align="right">예약명</TableCell>
+                                                        <TableCell align="right">시작시간</TableCell>
+                                                        <TableCell align="right">종료시간</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    <TableRow key='reservationInfo'>
+                                                        <TableCell component="th" scope="row">{selectedCamp}</TableCell>
+                                                        <TableCell align="right">{selectedFacility}</TableCell>
+                                                        <TableCell align="right">{restInfo.title}</TableCell>
+                                                        <TableCell align="right">{moment(restInfo.start).format('YYYY년 M월 D일 HH:mm')}</TableCell>
+                                                        <TableCell align="right">{moment(restInfo.end).format('YYYY년 M월 D일 HH:mm')}</TableCell>
+                                                    </TableRow>
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </Typography>
+                                </Box>
                                 <Typography variant="subtitle1">
                                     신청하신 예약은 마이페이지 또는 예약환인 탭에서 조회하실 수 있습니다.
                                  </Typography>
@@ -136,18 +176,20 @@ export default function Checkout() {
                                     {getStepContent(activeStep)}
                                     {activeStep !== 0 && (
                                         <div className={classes.buttons}>
-                                            <Button onClick={handleBack} className={classes.button}>
+                                            <Button variant="contained" onClick={handleBack} className={classes.button}>
                                                 이전
                                             </Button>
 
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                onClick={handleNext}
-                                                className={classes.button}
-                                            >
-                                                {activeStep === steps.length - 1 ? '예약하기' : '다음'}
-                                            </Button>
+                                            {activeStep === steps.length - 1 && (
+                                                < Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={handleNext}
+                                                    className={classes.button}
+                                                >
+                                                    {activeStep === steps.length - 1 ? '예약하기' : '다음'}
+                                                </Button>
+                                            )}
                                         </div>
                                     )}
                                 </React.Fragment>
@@ -155,6 +197,6 @@ export default function Checkout() {
                     </React.Fragment>
                 </Paper>
             </main>
-        </React.Fragment>
+        </React.Fragment >
     );
 }
