@@ -7,8 +7,6 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import moment from "moment";
-
 import SelectCamp from './checkoutform/SelectCamp';
 import SelectFacility from './checkoutform/SelectFacility';
 import SelectDate from './checkoutform/SelectDate';
@@ -89,22 +87,22 @@ export default function Checkout() {
         setActiveStep(activeStep - 1);
     };
 
-    const tempFunction = async () => {
-        if (activeStep === steps.length) {
-            app.auth().onAuthStateChanged((user) => {
-                if (user) {
-                    const start = new Date(selectedDate.start)
-                    const end = new Date(selectedDate.end)
-
-                    const db = app.firestore();
-                    db.collection("camp").doc(selectedCamp).collection('facility').doc(selectedFacility).collection('date').doc(moment(selectedDate.start, 'YYYY-MM-DD HH:mm').format('YYYY.MM.DD'))
-                        .collection('reservation').add({ start, end, uid: user.uid, title: selectedDate.title })
-                }
-            });
-        }
-    }
-
     React.useEffect(() => {
+        const tempFunction = async () => {
+            if (activeStep === steps.length) {
+                app.auth().onAuthStateChanged((user) => {
+                    if (user) {
+                        const start = new Date(selectedDate.start)
+                        const end = new Date(selectedDate.end)
+
+                        const db = app.firestore();
+                        db.collection("camp").doc(selectedCamp).collection('facility').doc(selectedFacility).collection('reservation').add({ start, end, uid: user.uid, title: selectedDate.title })
+                    } else {
+                        alert("로그인해라")
+                    }
+                });
+            }
+        }
         tempFunction();
     })
 

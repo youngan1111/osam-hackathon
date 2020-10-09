@@ -19,7 +19,7 @@ function Copyright() {
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
             <Link color="inherit" href="https://material-ui.com/">
-                Your Website
+            체육시설 예약체계
       </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
-    marginTop:{
+    marginTop: {
         marginTop: theme.spacing(1)
     }
 }));
@@ -97,7 +97,7 @@ const SignIn = ({ location }) => {
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5" className={classes.marginTop}>
-                    로그인  
+                    로그인
                 </Typography>
                 <form className={classes.form} noValidate onSubmit={handleLogin}>
                     <TextField

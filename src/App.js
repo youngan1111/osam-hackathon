@@ -5,7 +5,7 @@ import Edit from "./fontawesome/edit";
 import User from "./fontawesome/user";
 import Login from "./fontawesome/login";
 import Logout from "./fontawesome/logout";
-import Reservation from "./reservation";
+import Reservation from "./reservationDeprecated";
 import IndexPage from "./indexPage";
 import PrivateRoute from './privateRoute'
 import SignUp from './signUp'
