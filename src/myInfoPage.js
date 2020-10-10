@@ -55,7 +55,7 @@ const MyInfoPage = () => {
                     {userInfo.military}
                     {userInfo.rank}
                     {userInfo.serialNumber}
-                    {userInfo.admin === "true" ? '관리자계정' : '일반계정'}
+                    {userInfo.admin === "true" ? '관리자계정1' : '일반계정'}
                 </Typography>
             </Container>
         </div>
