@@ -213,7 +213,6 @@ const SignUp = ({ history }) => {
                 fullWidth
                 id="name"
                 label="성명"
-              // autoFocus
               />
               <p className="errorMessage">{nameError}</p>
             </Grid>

@@ -14,7 +14,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "firebase": "^7.21.1",
-    "firebase-tools": "^8.11.2",
+    "firebase-tools": "^8.12.1",
     "global": "^4.4.0",
     "moment": "^2.29.0",
     "react": "^16.13.1",

@@ -10,6 +10,7 @@ import IndexPage from "./indexPage";
 import PrivateRoute from './privateRoute'
 import SignUp from './signUp'
 import SignIn from './signIn'
+import MyInfoPage from './myInfoPage'
 import CampList from './campList'
 import Checkout from './reservation'
 import Reservation from './reservation'
@@ -63,7 +64,7 @@ const App = () => {
               <li>
                 <User />
                 {isLogined ?
-                  <span>&nbsp;내정보</span> :
+                  <NavLink to='/myInfoPage'>&nbsp;내정보</NavLink> :
                   <NavLink to="/signUp">&nbsp;회원가입</NavLink>
                 }
               </li>
@@ -90,6 +91,8 @@ const App = () => {
           <Route path="/showReservation" component={CampList} />
 
           <Route path="/login" component={SignIn} />
+
+          <Route path="/myInfoPage" component={MyInfoPage} />
 
           <Route path="/signUp" component={SignUp} />
 

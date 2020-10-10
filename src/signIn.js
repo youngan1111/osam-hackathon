@@ -19,7 +19,7 @@ function Copyright() {
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
             <Link color="inherit" href="https://material-ui.com/">
-            체육시설 예약체계
+                체육시설 예약체계
       </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
