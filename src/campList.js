@@ -7,6 +7,7 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box'
 import app from "./firebase";
+import moment from 'moment'
 
 const useStyles = makeStyles((theme) => ({
   top: {
@@ -32,9 +33,29 @@ const CampList = () => {
   React.useEffect(() => {
     const fetchData = () => {
       const db = app.firestore();
+      // db.collection("camp").get().then(snapshot => {
+      //   snapshot.forEach(doc => {
+      //     setCamps(oldArray => [...oldArray, { name: doc.id }]);
+      //   });
+      // });
       db.collection("camp").get().then(snapshot => {
         snapshot.forEach(doc => {
-          setCamps(oldArray => [...oldArray, { name: doc.id }]);
+          db.collection("camp").doc(doc.id).collection('facility').get().then(snapshot => {
+            snapshot.forEach(document => {
+              const startTime = moment().startOf('day').subtract(1, 'days').toDate().getTime();
+              const endTime = moment().endOf('day').subtract(1, 'days').toDate().getTime();
+
+              db.collection("camp").doc(doc.id).collection('facility').doc(document.id).collection('reservation').where('start', '>=', new Date(startTime)).where('start', '<=', new Date(endTime)).get().then(snapshot => {
+                snapshot.forEach(docu => {
+                  console.log(docu.data().start.toDate())
+                  console.log(docu.data().end.toDate())
+                  console.log(docu.data().start.toDate() > docu.data().end.toDate())
+                  console.log(docu.data().title)
+                })
+
+              })
+            })
+          })
         });
       });
     };
