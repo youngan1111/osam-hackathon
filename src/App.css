@@ -27,7 +27,7 @@ a {
 }
 .responsive_nav{
   width: 100%;
-  margin: auto;
+  margin: 0 auto;
   max-width: 80rem;
   position: relative;
   background-color: var(--background-color);

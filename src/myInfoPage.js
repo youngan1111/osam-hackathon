@@ -17,6 +17,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Chip from '@material-ui/core/Chip';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -65,6 +66,9 @@ const MyInfoPage = () => {
     const [rank, setRank] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [passwordError, setPasswordError] = React.useState('')
+    const [firstPasswordError, setFirstPasswordError] = React.useState('')
+    const [secondPasswordError, setSecondPasswordError] = React.useState('')
+    const [thirdPasswordError, setThirdPasswordError] = React.useState('')
 
     const classes = useStyles();
 
@@ -92,7 +96,44 @@ const MyInfoPage = () => {
                 default:
             }
         });
+    }
 
+    const handlePasswordChange = (event) => {
+        event.preventDefault();
+
+        setFirstPasswordError('');
+        setSecondPasswordError('');
+        setThirdPasswordError('');
+
+        const { password, newPassword, passwordCheck } = event.target.elements;
+
+        if (password.value === '') setFirstPasswordError('비밀번호를 입력해주세요.')
+        else if (newPassword.value === '') setSecondPasswordError('새로운 비밀번호를 입력해주세요.')
+        else if (passwordCheck.value === '') setThirdPasswordError('비밀번호를 다시 한번 입력해주세요.')
+        else if (newPassword.value !== passwordCheck.value) setThirdPasswordError('비밀번호가 일치하지 않습니다.')
+        else {
+
+
+            app.auth().signInWithEmailAndPassword(userInfo.email, password.value).then(() => {
+                authUser.updatePassword(newPassword.value).then(function () {
+                    alert('비밀번호 변경이 성공했습니다.')// alert 말고 그냥 페이지로 보여줘도 된다.
+                }).catch(function (error) {
+                    switch (error.code) {
+                        case "auth/weak-password":
+                            setFirstPasswordError('6자 이상의 비밀번호를 사용하세요.')
+                            break;
+                        default: break;
+                    }
+                });
+            }, (error) => {
+                switch (error.code) {
+                    case "auth/wrong-password":
+                        setFirstPasswordError("비밀번호가 올바르지 않습니다.")
+                        break;
+                    default:
+                }
+            });
+        }
     }
 
     React.useEffect(() => {
@@ -228,30 +269,47 @@ const MyInfoPage = () => {
                     </span>
                 </Container>) :
                 (<Container component="main" maxWidth="sm">
-                    <TextField
-                        className={classes.passwordInput}
-                        required
-                        id="outlined-required"
-                        label="Required"
-                        defaultValue="Hello World"
-                        variant="outlined"
-                    />
-                    <TextField
-                        className={classes.passwordInput}
-                        required
-                        id="outlined-required"
-                        label="Required"
-                        defaultValue="Hello World"
-                        variant="outlined"
-                    />
-                    <TextField
-                        className={classes.passwordInput}
-                        required
-                        id="outlined-required"
-                        label="Required"
-                        defaultValue="Hello World"
-                        variant="outlined"
-                    />
+                    <form noValidate onSubmit={handlePasswordChange}>
+                        <Chip label="기존 비밀번호" variant="outlined" />
+                        <TextField
+                            error={firstPasswordError === '' ? false : true}
+                            className={classes.passwordInput}
+                            required
+                            helperText={firstPasswordError}
+                            id="password"
+                            label="기존 비밀번호"
+                            placeholder='기존 비밀번호 입력'
+                            variant="outlined"
+                        />
+
+                        <Chip label="새로운 비밀번호" variant="outlined" />
+                        <TextField
+                            error={secondPasswordError === '' ? false : true}
+                            helperText={secondPasswordError}
+                            className={classes.passwordInput}
+                            required
+                            id="newPassword"
+                            label="새로운 비밀번호"
+                            placeholder='새로운 비밀번호 입력'
+                            variant="outlined"
+                        />
+
+                        <Chip label="비밀번호 확인" variant="outlined" />
+                        <TextField
+                            error={thirdPasswordError === '' ? false : true}
+                            helperText={thirdPasswordError}
+                            className={classes.passwordInput}
+                            required
+                            id="passwordCheck"
+                            label="비밀번호 확인"
+                            placeholder='비밀번호 확인'
+                            variant="outlined"
+                        />
+
+                        <span className={classes.buttons}>
+                            <Button type="submit" variant="contained" color="primary" className={classes.button}>비밀번호 변경</Button>
+                        </span>
+                    </form>
                 </Container>)}
         </div>
     );

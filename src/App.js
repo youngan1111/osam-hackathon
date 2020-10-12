@@ -16,6 +16,7 @@ import Checkout from './reservation'
 import Reservation from './reservation'
 import app from "./firebase"
 import { AuthProvider } from './auth'
+import Divider from '@material-ui/core/Divider';
 import {
   BrowserRouter as Router,
   Switch,
@@ -82,6 +83,7 @@ const App = () => {
             <Bars />
           </nav>
         </div>
+        <Divider />
 
         <Switch>
           <Route exact path="/" component={IndexPage} />
