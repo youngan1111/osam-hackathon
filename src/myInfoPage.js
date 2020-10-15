@@ -18,6 +18,11 @@ import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Chip from '@material-ui/core/Chip';
+import FormControl from '@material-ui/core/FormControl';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Snackbar from '@material-ui/core/Snackbar';
+import { Slide } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -57,6 +62,10 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(3),
         display: 'flex'
     },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: "#fff"
+    },          
 }));
 
 const MyInfoPage = () => {
@@ -69,22 +78,21 @@ const MyInfoPage = () => {
     const [firstPasswordError, setFirstPasswordError] = React.useState('')
     const [secondPasswordError, setSecondPasswordError] = React.useState('')
     const [thirdPasswordError, setThirdPasswordError] = React.useState('')
+    const [open, setOpen] = React.useState(false);
+    const [snackBar, setSnackBar] = React.useState(false);
 
     const classes = useStyles();
 
-
-    const navigationChange = (event, newValue) => {
-        setValue(newValue);
-    };
-    const handleRank = (event) => {
-        setRank(event.target.value);
-    }
-    const handleModify = async (event) => {
+    const handleModify = (event) => {
         event.preventDefault();
+        setOpen(true);
+        setPasswordError('');
 
         app.auth().signInWithEmailAndPassword(userInfo.email, password).then(({ user }) => {
             app.firestore().collection("users").where('uid', '==', user.uid).get().then(snapshot => {
                 snapshot.forEach(doc => {
+                    setSnackBar(true)
+                    setPassword('')
                     app.firestore().collection("users").doc(doc.id).update({ rank })
                 });
             })
@@ -96,11 +104,16 @@ const MyInfoPage = () => {
                 default:
             }
         });
+
+        setTimeout(() => {
+            setOpen(false);
+         }, 300);
     }
 
     const handlePasswordChange = (event) => {
         event.preventDefault();
 
+        setOpen(true);
         setFirstPasswordError('');
         setSecondPasswordError('');
         setThirdPasswordError('');
@@ -112,15 +125,16 @@ const MyInfoPage = () => {
         else if (passwordCheck.value === '') setThirdPasswordError('비밀번호를 다시 한번 입력해주세요.')
         else if (newPassword.value !== passwordCheck.value) setThirdPasswordError('비밀번호가 일치하지 않습니다.')
         else {
-
-
             app.auth().signInWithEmailAndPassword(userInfo.email, password.value).then(() => {
                 authUser.updatePassword(newPassword.value).then(function () {
-                    alert('비밀번호 변경이 성공했습니다.')// alert 말고 그냥 페이지로 보여줘도 된다.
+                    setSnackBar(true)
+                    password.value = '';
+                    newPassword.value = '';
+                    passwordCheck.value = '';
                 }).catch(function (error) {
                     switch (error.code) {
                         case "auth/weak-password":
-                            setFirstPasswordError('6자 이상의 비밀번호를 사용하세요.')
+                            setSecondPasswordError('6자 이상의 비밀번호를 사용하세요.')
                             break;
                         default: break;
                     }
@@ -134,6 +148,10 @@ const MyInfoPage = () => {
                 }
             });
         }
+        
+        setTimeout(() => {
+            setOpen(false);
+        }, 300);
     }
 
     React.useEffect(() => {
@@ -151,7 +169,7 @@ const MyInfoPage = () => {
 
     return (
         <div>
-            <BottomNavigation value={value} onChange={navigationChange} showLabels className={classes.root}>
+            <BottomNavigation value={value} onChange={(event, newValue) => {setValue(newValue)}} showLabels className={classes.root}>
                 <BottomNavigationAction label="개인정보 변경" value='1' icon={<AccountBox />} />
                 <BottomNavigationAction label="비밀번호 변경" value='2' icon={<Lock />} />
             </BottomNavigation>
@@ -178,19 +196,20 @@ const MyInfoPage = () => {
                                     <TableCell component="th" scope="row" className={classes.tableRow}>
                                         비밀번호 확인
                                     </TableCell>
-                                    <th>
-                                        <Input
-                                            id="standard-adornment-weight"
-                                            value={password}
-                                            onChange={({ target: { value } }) => setPassword(value)}
-                                            fullWidth
-                                            type='password'
-                                            className={classes.textField}
-                                            aria-describedby="standard-weight-helper-text"
-                                            inputProps={{ 'aria-label': 'weight', }}
-                                            placeholder='비밀번호를 입력해주세요.'
-                                        />
-                                    </th>
+                                        <th>
+                                            <FormControl fullWidth error={passwordError === '' ? false : true}>
+                                                <Input
+                                                    id="standard-adornment-weight"
+                                                    value={password}
+                                                    onChange={({ target: { value } }) => setPassword(value)}
+                                                    type='password'
+                                                    className={classes.textField}
+                                                    aria-describedby="standard-weight-helper-text"
+                                                    inputProps={{ 'aria-label': 'weight', }}
+                                                    placeholder='비밀번호를 입력해주세요.'
+                                                />
+                                            </FormControl>
+                                        </th>
                                 </TableRow>
                                 <TableRow key='military'>
                                     <TableCell component="th" scope="row" className={classes.tableRow}>
@@ -208,7 +227,7 @@ const MyInfoPage = () => {
                                             className={classes.textField}
                                             labelId="demo-simple-select-outlined-label"
                                             id="demo-simple-select-outlined"
-                                            onChange={handleRank}
+                                            onChange={(event) => setRank(event.target.value)}
                                             label="계급 선택"
                                             value={rank}
                                             align='left'
@@ -258,20 +277,30 @@ const MyInfoPage = () => {
                                         계정
                                 </TableCell>
                                     <TableCell align="left" className={classes.tableCell}>{userInfo.admin === "true" ? '관리자계정' : '일반계정'}</TableCell>
-                                </TableRow>
-
+                                </TableRow>     
                             </TableBody>
                         </Table>
                     </TableContainer>
                     <span className={classes.buttons}>
                         <Button onClick={handleModify} variant="contained" color="primary" className={classes.button}>수정</Button>
                         <Button variant="contained" color="secondary" className={classes.button}>회원탈퇴</Button>
+                        <Backdrop className={classes.backdrop} open={open} onClick={() => {setOpen(false)}}>
+                            <CircularProgress color="inherit" />
+                        </Backdrop>
                     </span>
+                    <Snackbar 
+                        autoHideDuration={2000}
+                        open={snackBar}
+                        onClose={() => setSnackBar(false)}
+                        TransitionComponent={Slide}
+                        message="개인정보 변경이 완료되었습니다."
+                    />
                 </Container>) :
                 (<Container component="main" maxWidth="sm">
                     <form noValidate onSubmit={handlePasswordChange}>
                         <Chip label="기존 비밀번호" variant="outlined" />
                         <TextField
+                            type='password'
                             error={firstPasswordError === '' ? false : true}
                             className={classes.passwordInput}
                             required
@@ -281,9 +310,9 @@ const MyInfoPage = () => {
                             placeholder='기존 비밀번호 입력'
                             variant="outlined"
                         />
-
                         <Chip label="새로운 비밀번호" variant="outlined" />
                         <TextField
+                            type='password'
                             error={secondPasswordError === '' ? false : true}
                             helperText={secondPasswordError}
                             className={classes.passwordInput}
@@ -293,9 +322,9 @@ const MyInfoPage = () => {
                             placeholder='새로운 비밀번호 입력'
                             variant="outlined"
                         />
-
                         <Chip label="비밀번호 확인" variant="outlined" />
                         <TextField
+                            type='password'
                             error={thirdPasswordError === '' ? false : true}
                             helperText={thirdPasswordError}
                             className={classes.passwordInput}
@@ -305,11 +334,20 @@ const MyInfoPage = () => {
                             placeholder='비밀번호 확인'
                             variant="outlined"
                         />
-
                         <span className={classes.buttons}>
                             <Button type="submit" variant="contained" color="primary" className={classes.button}>비밀번호 변경</Button>
+                            <Backdrop className={classes.backdrop} open={open} onClick={() => {setOpen(false)}}>
+                                <CircularProgress color="inherit" />
+                            </Backdrop>
                         </span>
                     </form>
+                    <Snackbar 
+                        autoHideDuration={2000}
+                        open={snackBar}
+                        onClose={() => setSnackBar(false)}
+                        TransitionComponent={Slide}
+                        message="비밀번호 변경이 완료되었습니다."
+                    />
                 </Container>)}
         </div>
     );
