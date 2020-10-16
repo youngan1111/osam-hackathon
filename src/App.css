@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Jua&display=swap");
 
 :root {
   --text-color: black;
@@ -8,7 +8,7 @@
 
 * {
   box-sizing: border-box;
-  font-family: 'Jua', sans-serif;
+  font-family: "Jua", sans-serif;
 }
 
 body {
@@ -21,23 +21,23 @@ a {
   color: var(--text-color);
 }
 
-.errorMessage{
+.errorMessage {
   color: red;
   margin: 0px;
 }
-.responsive_nav{
+.responsive_nav {
   width: 100%;
   margin: 0 auto;
   max-width: 80rem;
   position: relative;
-  background-color: var(--background-color);
+  /* background-color: var(--background-color); */
 }
-.responsive_nav:before{
+.responsive_nav:before {
   background-color: var(--background-color);
 }
 
-.reservationList{
-	color: black
+.reservationList {
+  color: black;
 }
 .navbar {
   display: flex;
@@ -67,7 +67,7 @@ a {
   padding: 8px 35px;
 }
 
-.signOut:hover{
+.signOut:hover {
   cursor: pointer;
 }
 
