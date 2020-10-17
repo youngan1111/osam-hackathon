@@ -9,17 +9,19 @@ import PrivateRoute from "./privateRoute";
 import SignUp from "./signUp";
 import SignIn from "./signIn";
 import MyInfoPage from "./myInfoPage";
-import AdminPage from "./adminPage";
+import AddFacility from "./addFacility";
 import CampList from "./campList";
 import Checkout from "./reservation";
 import Reservation from "./reservation";
 import app from "./firebase";
 import { AuthProvider, AuthContext } from "./auth";
 import Divider from "@material-ui/core/Divider";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import BackgroundImage from "./backgroundImage";
 import GridContainer from "./gridContainer.js";
 import GridItem from "./gridItem.js";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 import {
   BrowserRouter as Router,
   Switch,
@@ -62,8 +64,49 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+const StyledMenu = withStyles({
+  paper: {
+    border: "1px solid #d3d4d5",
+  },
+})((props) => (
+  <Menu
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "center",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "center",
+    }}
+    {...props}
+  />
+));
+
+const StyledMenuItem = withStyles((theme) => ({
+  root: {
+    "&:hover": {
+      backgroundColor: "#0f4c8133",
+    },
+    "&:active": {
+      backgroundColor: "#0f4c8133",
+    },
+  },
+}))(MenuItem);
+
 const App = () => {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
   const classes = useStyles();
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <AuthProvider>
@@ -95,9 +138,52 @@ const App = () => {
                 {({ currentUser, userInfo }) => {
                   if (currentUser && userInfo.admin === true) {
                     return (
-                      <li>
-                        <NavLink to="/adminPage">관리자페이지</NavLink>
-                      </li>
+                      <div>
+                        <li>
+                          <NavLink to="##" onClick={handleClick}>
+                            관리자페이지
+                          </NavLink>
+                        </li>
+                        <StyledMenu
+                          id="customized-menu"
+                          anchorEl={anchorEl}
+                          keepMounted
+                          open={Boolean(anchorEl)}
+                          onClose={handleClose}
+                        >
+                          <StyledMenuItem
+                            id="fistSmallMenu"
+                            style={{
+                              padding: 0,
+                            }}
+                          >
+                            <NavLink
+                              to="/addFacility"
+                              style={{
+                                padding: "6px 16px",
+                                display: "inline-block",
+                              }}
+                            >
+                              체육시설 추가하기
+                            </NavLink>
+                          </StyledMenuItem>
+                          <StyledMenuItem
+                            style={{
+                              padding: 0,
+                            }}
+                          >
+                            <NavLink
+                              to="/myInfoPage"
+                              style={{
+                                padding: "6px 16px",
+                                display: "inline-block",
+                              }}
+                            >
+                              관리자 추가하기
+                            </NavLink>
+                          </StyledMenuItem>
+                        </StyledMenu>
+                      </div>
                     );
                   }
                 }}
@@ -174,7 +260,7 @@ const App = () => {
 
           <Route path="/myInfoPage" component={MyInfoPage} />
 
-          <Route path="/adminPage" component={AdminPage} />
+          <Route path="/addFacility" component={AddFacility} />
 
           <Route path="/signUp" component={SignUp} />
 

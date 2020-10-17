@@ -63,7 +63,8 @@ a {
   margin-bottom: 5px;
 }
 
-.navbar__menu li {
+.navbar__menu a {
+  display: inline-block;
   padding: 8px 35px;
 }
 
@@ -72,7 +73,7 @@ a {
 }
 
 .navbar__menu li:hover {
-  background-color: var(--accent-color);
+  background-color: var(--background-color);
   border-radius: 4px;
 }
 
@@ -89,8 +90,9 @@ a {
 .navbar__icons li {
   padding: 8px 12px;
 }
+
 .navbar__icons li:hover {
-  background-color: var(--accent-color);
+  background-color: var(--background-color);
   border-radius: 4px;
 }
 
