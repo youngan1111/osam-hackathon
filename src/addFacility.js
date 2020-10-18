@@ -16,12 +16,11 @@ import { Slide } from "@material-ui/core";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
-import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import Input from "@material-ui/core/Input";
 
 const useStyles = makeStyles((theme) => ({
   breadcrumbs: {
-    fontSize: 12,
+    fontSize: 10,
     margin: theme.spacing(1, 4, 1),
     justifyContent: "flex-end",
     display: "flex",
@@ -73,15 +72,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AddFacility = () => {
-  const [userInfo, setUserInfo] = React.useState({});
-  const [value, setValue] = React.useState("1");
-  const [authUser, setAuthUser] = React.useState(null);
-  const [rank, setRank] = React.useState("");
+  //   const [authUser, setAuthUser] = React.useState(null);
   const [password, setPassword] = React.useState("");
-  const [passwordError, setPasswordError] = React.useState("");
-  const [firstPasswordError, setFirstPasswordError] = React.useState("");
-  const [secondPasswordError, setSecondPasswordError] = React.useState("");
-  const [thirdPasswordError, setThirdPasswordError] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const [snackBar, setSnackBar] = React.useState(false);
 
@@ -90,97 +82,6 @@ const AddFacility = () => {
   const handleModify = (event) => {
     event.preventDefault();
     setOpen(true);
-    setPasswordError("");
-
-    app
-      .auth()
-      .signInWithEmailAndPassword(userInfo.email, password)
-      .then(
-        ({ user }) => {
-          app
-            .firestore()
-            .collection("users")
-            .where("uid", "==", user.uid)
-            .get()
-            .then((snapshot) => {
-              snapshot.forEach((doc) => {
-                setSnackBar(true);
-                setPassword("");
-                app
-                  .firestore()
-                  .collection("users")
-                  .doc(doc.id)
-                  .update({ rank });
-              });
-            });
-        },
-        (error) => {
-          switch (error.code) {
-            case "auth/wrong-password":
-              setPasswordError("잘못된 비밀번호입니다.");
-              break;
-            default:
-          }
-        }
-      );
-
-    setTimeout(() => {
-      setOpen(false);
-    }, 300);
-  };
-
-  const handlePasswordChange = (event) => {
-    event.preventDefault();
-
-    setOpen(true);
-    setFirstPasswordError("");
-    setSecondPasswordError("");
-    setThirdPasswordError("");
-
-    const { password, newPassword, passwordCheck } = event.target.elements;
-
-    if (password.value === "")
-      setFirstPasswordError("비밀번호를 입력해주세요.");
-    else if (newPassword.value === "")
-      setSecondPasswordError("새로운 비밀번호를 입력해주세요.");
-    else if (passwordCheck.value === "")
-      setThirdPasswordError("비밀번호를 다시 한번 입력해주세요.");
-    else if (newPassword.value !== passwordCheck.value)
-      setThirdPasswordError("비밀번호가 일치하지 않습니다.");
-    else {
-      app
-        .auth()
-        .signInWithEmailAndPassword(userInfo.email, password.value)
-        .then(
-          () => {
-            authUser
-              .updatePassword(newPassword.value)
-              .then(function () {
-                setSnackBar(true);
-                password.value = "";
-                newPassword.value = "";
-                passwordCheck.value = "";
-              })
-              .catch(function (error) {
-                switch (error.code) {
-                  case "auth/weak-password":
-                    setSecondPasswordError("6자 이상의 비밀번호를 사용하세요.");
-                    break;
-                  default:
-                    break;
-                }
-              });
-          },
-          (error) => {
-            switch (error.code) {
-              case "auth/wrong-password":
-                setFirstPasswordError("비밀번호가 올바르지 않습니다.");
-                break;
-              default:
-            }
-          }
-        );
-    }
 
     setTimeout(() => {
       setOpen(false);
@@ -189,7 +90,7 @@ const AddFacility = () => {
 
   React.useEffect(() => {
     app.auth().onAuthStateChanged((user) => {
-      setAuthUser(user);
+      //   setAuthUser(user);
       app
         .firestore()
         .collection("users")
@@ -197,8 +98,17 @@ const AddFacility = () => {
         .get()
         .then((snapshot) => {
           snapshot.forEach((doc) => {
-            setUserInfo(doc.data());
-            setRank(doc.data().rank);
+            app
+              .firestore()
+              .collection("users")
+              .doc(doc.id)
+              .collection("camp")
+              .get()
+              .then((snapshot) => {
+                snapshot.forEach((doc) => {
+                  console.log(doc.id);
+                });
+              });
           });
         });
     });
@@ -213,7 +123,7 @@ const AddFacility = () => {
     <div>
       <Breadcrumbs
         className={classes.breadcrumbs}
-        separator={<NavigateNextIcon fontSize="small" />}
+        // separator={<NavigateNextIcon fontSize="small" />}
         aria-label="breadcrumb"
       >
         <Link color="inherit" href="/" onClick={handleClick}>
@@ -224,6 +134,12 @@ const AddFacility = () => {
           className={classes.breadcrumbsTypography}
         >
           관리자페이지
+        </Typography>
+        <Typography
+          color="textPrimary"
+          className={classes.breadcrumbsTypography}
+        >
+          부대 관리
         </Typography>
       </Breadcrumbs>
 
@@ -236,7 +152,7 @@ const AddFacility = () => {
           textAlign: "center",
         }}
       >
-        체육시설 추가하기
+        부대 관리
       </Typography>
 
       <Container component="main" maxWidth="md">
@@ -251,17 +167,18 @@ const AddFacility = () => {
                 >
                   부대명
                 </TableCell>
-
-                <Input
-                  id="standard-adornment-weight"
-                  value={password}
-                  onChange={({ target: { value } }) => setPassword(value)}
-                  type="text"
-                  className={classes.textField}
-                  aria-describedby="standard-weight-helper-text"
-                  inputProps={{ "aria-label": "weight" }}
-                  placeholder="비밀번호를 입력해주세요."
-                />
+                <th>
+                  <Input
+                    id="standard-adornment-weight"
+                    value={password}
+                    onChange={({ target: { value } }) => setPassword(value)}
+                    type="text"
+                    className={classes.textField}
+                    aria-describedby="standard-weight-helper-text"
+                    inputProps={{ "aria-label": "weight" }}
+                    placeholder="."
+                  />
+                </th>
               </TableRow>
             </TableBody>
           </Table>
@@ -274,14 +191,7 @@ const AddFacility = () => {
             color="primary"
             className={classes.button}
           >
-            수정
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            className={classes.button}
-          >
-            회원탈퇴
+            추가
           </Button>
           <Backdrop
             className={classes.backdrop}

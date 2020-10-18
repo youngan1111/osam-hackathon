@@ -36,19 +36,19 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 16,
     marginBottom: theme.spacing(0),
     padding: theme.spacing(2),
-    paddingLeft: theme.spacing(5),
+    paddingLeft: "7.787%",
     width: "100%",
   },
   tableRow: {
     fontSize: 16,
     fontFamily: ["Jua", '"sans-serif"'],
-    paddingLeft: theme.spacing(5),
+    paddingLeft: "5%",
     backgroundColor: "#0f4c8133",
   },
   tableCell: {
     fontSize: 16,
     fontFamily: ["Jua", '"sans-serif"'],
-    paddingLeft: theme.spacing(5),
+    paddingLeft: "5%",
   },
   buttons: {
     display: "flex",
@@ -452,13 +452,7 @@ const MyInfoPage = () => {
               >
                 비밀번호 변경
               </Button>
-              <Backdrop
-                className={classes.backdrop}
-                open={open}
-                onClick={() => {
-                  setOpen(false);
-                }}
-              >
+              <Backdrop className={classes.backdrop} open={open}>
                 <CircularProgress color="inherit" />
               </Backdrop>
             </span>

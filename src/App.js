@@ -10,6 +10,7 @@ import SignUp from "./signUp";
 import SignIn from "./signIn";
 import MyInfoPage from "./myInfoPage";
 import AddFacility from "./addFacility";
+import AddCamp from "./addCamp";
 import CampList from "./campList";
 import Checkout from "./reservation";
 import Reservation from "./reservation";
@@ -140,7 +141,7 @@ const App = () => {
                     return (
                       <div>
                         <li>
-                          <NavLink to="##" onClick={handleClick}>
+                          <NavLink to="/addCamp" onClick={handleClick}>
                             관리자페이지
                           </NavLink>
                         </li>
@@ -158,13 +159,13 @@ const App = () => {
                             }}
                           >
                             <NavLink
-                              to="/addFacility"
+                              to="/addCamp"
                               style={{
                                 padding: "6px 16px",
                                 display: "inline-block",
                               }}
                             >
-                              체육시설 추가하기
+                              부대 관리
                             </NavLink>
                           </StyledMenuItem>
                           <StyledMenuItem
@@ -173,13 +174,13 @@ const App = () => {
                             }}
                           >
                             <NavLink
-                              to="/myInfoPage"
+                              to="/addFacility"
                               style={{
                                 padding: "6px 16px",
                                 display: "inline-block",
                               }}
                             >
-                              관리자 추가하기
+                              체육시설 관리
                             </NavLink>
                           </StyledMenuItem>
                         </StyledMenu>
@@ -260,7 +261,13 @@ const App = () => {
 
           <Route path="/myInfoPage" component={MyInfoPage} />
 
-          <Route path="/addFacility" component={AddFacility} />
+          <Route
+            path="/addFacility"
+            component={AddFacility}
+            // render={() => <AddFacility user={currentUser} />}
+          />
+
+          <Route path="/addCamp" component={AddCamp} />
 
           <Route path="/signUp" component={SignUp} />
 
